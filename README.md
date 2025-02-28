@@ -24,15 +24,30 @@ With the satellite images as input, we first crop the images into fixed sizes an
 
 ## 2 Installation
 
-### 2.1 python environment
+### 2.1 system requirements
+
+The code is written with Python. We have tested the code with Ubuntu 20.04 and Ubuntu 22.04, both using Python 3.9. However, the code should be also compatible with other operating systems, including Windows, OSX, and Linux.
+
+### 2.2 python environment
+
+We recommend installing the python environment using acaconda or miniconda. The installation typically takes several minutes on a normal desktop computer.
 
 ```
-pip install -r requirements.txt
+## create python environment
+conda create -n satellite python=3.9
+conda activate satellite
+
+## install pytorch with cuda
+conda install pytorch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 pytorch-cuda=12.4 -c pytorch -c nvidia
+pip install pycocotools tensorboard
+
+## install required packages with latest version
+pip install opencv-python numpy matplotlib tqdm pillow gdown pyyaml scipy segmentation_models_pytorch
 ```
 - For detection model, it is required to install mish-cuda：https://github.com/thomasbrandon/mish-cuda
 
 
-### 2.2 pretrained models
+### 2.3 pretrained models
 
 - detection (save to ```src/detection/weights```): https://drive.google.com/file/d/1Q-f7G0RcclqtNnQvZWNNypB46WxNtJqP/view?usp=sharing
 
@@ -43,7 +58,7 @@ pip install -r requirements.txt
 
 ## 3 Running the code
 
-**Note:** We cannot provide the satellite images in this codebase due to its enormous size. We do provide the detection results in ```src/cluster_detection/data``` and segmentation results in ```src/segmentation/result```. To test the code with only these provided results, only run the scripts that are marked as "**ready**".
+**Note:** We cannot provide the satellite images in this codebase due to its enormous size. We do provide a sample of **demo data** for detection results in ```src/cluster_detection/data``` and segmentation results in ```src/segmentation/result```. To test the code with only these provided results, please run the scripts that are marked as "**ready**". Unless specifically mentioned, all scripts are should run within several minutes on a normal desktop computer.
 
 ### 3.1 data preparation
 
@@ -57,7 +72,7 @@ python preprocess/preprocess_train.py;
 ```
 
 ### 3.2 detection
-Training:
+Training: (typically takes several hours depending on computer's GPU power)
 ```
 cd src/detection/;
 bash scripts/train.sh;
@@ -77,7 +92,7 @@ bash scripts/detect.sh;
 ```
 
 ### 3.3 segmentation
-Training:
+Training: (typical running time ranges from several minutes to several hours)
 ```
 cd src/segmentation/;
 python main.py;
@@ -107,7 +122,7 @@ python detect.py;  # detect clusters
 
 ### 3.5 stats
 
-Calculate statistics **(ready)**:
+Reproduce the statistics **(ready)**:
 ```
 cd src/stats;
 python get_stats.py
